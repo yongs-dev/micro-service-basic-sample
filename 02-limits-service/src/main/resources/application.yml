@@ -1,0 +1,22 @@
+server:
+  port: 8088
+
+spring:
+  application:
+    name: limits-service
+  config:
+    import: optional:configserver:http://localhost:8888
+  profiles:
+    active: dev
+  cloud:
+    config:
+      profile: dev
+
+limits-service:
+  minimum: 3
+  maximum: 997
+
+logging:
+  level:
+    org:
+      springframework: INFO

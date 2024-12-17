@@ -1,0 +1,69 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: currency-exchange
+#  config:
+#    import: optional:configserver:http://localhost:8888
+  datasource:
+    url: jdbc:mysql://localhost:13306/mark
+    username: mark
+    password: mark
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+logging:
+  level:
+    org:
+      springframework: INFO
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+resilience4j:
+  retry:
+    instances:
+      sample-api:
+        max-attempts: 5
+        waitDuration: 1s
+        enable-exponential-backoff: true
+  rate-limiter:
+    instances:
+      default:
+        limitForPeriod: 2
+        limitRefreshPeriod: 10s
+  bulkhead:
+    instances:
+      default:
+        maxConcurrentCalls: 10
+      sample-api:
+        maxConcurrentCalls: 10
+#  circuitbreaker:
+#    instances:
+#      default:
+#        failure-rate-threshold: 90
